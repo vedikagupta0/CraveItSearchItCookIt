@@ -1,0 +1,102 @@
+[
+  {
+    "query": "spaghetti carbonara",
+    "expected_keywords": ["carbonara", "spaghetti"]
+  },
+  {
+    "query": "chocolate cake recipe",
+    "expected_keywords": ["chocolate", "cake"]
+  },
+  {
+    "query": "healthy tea recipe for daily consumption",
+    "expected_keywords": ["tea"]
+  },
+  {
+    "query": "vegetarian paella",
+    "expected_keywords": ["paella"]
+  },
+  {
+    "query": "chicken biryani",
+    "expected_keywords": ["biryani"]
+  },
+  {
+    "query": "paneer butter masala",
+    "expected_keywords": ["paneer"]
+  },
+  {
+    "query": "authentic tiramisu",
+    "expected_keywords": ["tiramisu"]
+  },
+  {
+    "query": "gluten free chocolate dessert",
+    "expected_keywords": ["gluten", "chocolate"]
+  },
+  {
+    "query": "vegan banana ice cream",
+    "expected_keywords": ["vegan", "banana"]
+  },
+  {
+    "query": "quick vegetarian dinner under 30 minutes",
+    "expected_keywords": []
+  },
+  {
+    "query": "gluten free breakfast ideas",
+    "expected_keywords": []
+  },
+  {
+    "query": "classic chicken pho",
+    "expected_keywords": ["pho"]
+  },
+  {
+    "query": "falafel recipe",
+    "expected_keywords": ["falafel"]
+  },
+  {
+    "query": "chicken tikka masala",
+    "expected_keywords": ["tikka", "masala"]
+  },
+  {
+    "query": "homemade naan bread",
+    "expected_keywords": ["naan"]
+  },
+  {
+    "query": "shrimp dumplings",
+    "expected_keywords": ["dumpling", "shrimp"]
+  },
+  {
+    "query": "spicy potato samosas",
+    "expected_keywords": ["samosa"]
+  },
+  {
+    "query": "pad thai noodles",
+    "expected_keywords": ["pad thai"]
+  },
+  {
+    "query": "मसाला दाल",
+    "expected_keywords": ["dal"]
+  },
+  {
+    "query": "recette de crêpes françaises",
+    "expected_keywords": ["crepe", "crêpe"]
+  },
+  {
+    "query": "receta de ceviche",
+    "expected_keywords": ["ceviche"]
+  },
+  {
+    "query": "рецепт борща",
+    "expected_keywords": ["borscht"]
+  },
+  {
+    "query": "巧克力蛋糕食谱",
+    "expected_keywords": ["chocolate", "cake"]
+  },
+  {
+    "query": "chocolate lava cake with molten center",
+    "expected_keywords": []
+  },
+  {
+    "query": "traditional idli sambar breakfast",
+    "expected_keywords": []
+  }
+]
