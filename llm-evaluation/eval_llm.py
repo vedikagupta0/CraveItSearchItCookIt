@@ -121,6 +121,7 @@ Score the answer on two axes:
   asked for? 5 = directly and fully answers the question. 1 = off-topic or
   ignores the question.
 
+NOTE: 1. If the answer CORRECTLY states that no retrieved recipes match the query when there actually is no match, give faithfulness=5 and relevancy=5.
 Respond with ONLY a JSON object, no prose, no markdown fences, in this exact
 shape:
 {"faithfulness": <int 1-5>, "relevancy": <int 1-5>, "reasoning": "<one short sentence>"}
