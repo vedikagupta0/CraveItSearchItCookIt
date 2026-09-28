@@ -47,7 +47,7 @@ All 5 added cases were answered correctly with "No relevant recipes found in con
   refusals, which have no ingredients or steps by design, plus the French crêpes answer, which the regex missed because it says "Ingrédients". Of the 21 answered cases, 20 were complete.
 
 ## Translation layer updated
-- The language is detected with Lingua, the query is translated to English, and it is matched against the recipe corpus by meaning, not by keyword overlap. The accuracy and latency is approximately the same.
+- The language is detected with Lingua, the query is translated to English, and it is matched against the recipe corpus by meaning, not by keyword overlap. The accuracy and latency is approximately the same so the results remains the same.
 
 
 ## What it does
