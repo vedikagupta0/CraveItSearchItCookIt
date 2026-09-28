@@ -46,21 +46,13 @@ All 5 added cases were answered correctly with "No relevant recipes found in con
 - **Completeness (67%) understates answer quality.** The 10 cases scoring 0 are mostly correct
   refusals, which have no ingredients or steps by design, plus the French crêpes answer, which the regex missed because it says "Ingrédients". Of the 21 answered cases, 20 were complete.
 
-## Known limitation: translation layer
-
-The Translator is often not able to translate non english queries well into english. Two options:
-
-- **Improve it**: replace `deep-translator` with an LLM-based translation step and re-run the
-  non-English cases.
-- **Remove it**: use a multilingual embedding model so non-English queries match the corpus
-  directly, removing one failure point and one dependency.
-This will be updated in future.
+## Translation layer updated
+- The language is detected with Lingua, the query is translated to English, and it is matched against the recipe corpus by meaning, not by keyword overlap. The accuracy and latency is approximately the same.
 
 
 ## What it does
 
-- **Cross-lingual retrieval** — a query in Hindi, French, or another language is translated and
-  matched against the recipe corpus by meaning.
+- **Cross-lingual retrieval** — a query in Hindi, French, or another language is detected and translated and matched against the recipe corpus by meaning.
 - **Multimodal similarity** — surfaces visually similar dish photos alongside text matches.
 - **Grounded generation** — every ingredient, quantity, and step in the generated answer is tagged
   `[Recipe Name]` back to its source, so claims can be traced and checked (this is what the
@@ -101,7 +93,7 @@ python llm-evaluation/eval_llm.py --limit 3    # quick smoke test
 
 ## Stack
 
-Python · LangChain · FAISS · OpenCLIP · Groq (gpt-oss) · Gradio · LLM-as-judge evaluation
+Python · LangChain · FAISS · OpenCLIP · Groq (gpt-oss) · Gradio · LLM-as-judge evaluation · Lingua · deep-translator
 
 ## License
 

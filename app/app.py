@@ -26,7 +26,9 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.build_indexes import build_rag_column, OpenCLIPEmbeddings
 
 from deep_translator import GoogleTranslator
-from langdetect import detect, LangDetectException
+from lingua import LanguageDetectorBuilder
+
+detector = LanguageDetectorBuilder.from_all_languages().build()
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -105,14 +107,52 @@ def ensure_hf_images(local_dir: str = HF_IMAGE_CACHE) -> str:
 
 # ── Translation ───────────────────────────────────────────────────────────────
 
-def translate_to_english(text: str) -> str:
+LINGUA_TO_GOOGLE = {
+    "AFRIKAANS": "af", "ALBANIAN": "sq", "ARABIC": "ar", "ARMENIAN": "hy",
+    "AZERBAIJANI": "az", "BASQUE": "eu", "BELARUSIAN": "be", "BENGALI": "bn",
+    "BOSNIAN": "bs", "BULGARIAN": "bg", "CATALAN": "ca", "CHINESE": "zh-CN",
+    "CROATIAN": "hr", "CZECH": "cs", "DANISH": "da", "DUTCH": "nl",
+    "ENGLISH": "en", "ESPERANTO": "eo", "ESTONIAN": "et", "FINNISH": "fi",
+    "FRENCH": "fr", "GANDA": "lg", "GEORGIAN": "ka", "GERMAN": "de",
+    "GREEK": "el", "GUJARATI": "gu", "HEBREW": "iw", "HINDI": "hi",
+    "HUNGARIAN": "hu", "ICELANDIC": "is", "INDONESIAN": "id", "IRISH": "ga",
+    "ITALIAN": "it", "JAPANESE": "ja", "KAZAKH": "kk", "KOREAN": "ko",
+    "LATIN": "la", "LATVIAN": "lv", "LITHUANIAN": "lt", "MACEDONIAN": "mk",
+    "MALAY": "ms", "MAORI": "mi", "MARATHI": "mr", "MONGOLIAN": "mn",
+    "NYANJA": "ny", "PERSIAN": "fa", "POLISH": "pl", "PORTUGUESE": "pt",
+    "PUNJABI": "pa", "ROMANIAN": "ro", "RUSSIAN": "ru", "SERBIAN": "sr",
+    "SHONA": "sn", "SLOVAK": "sk", "SLOVENIAN": "sl", "SOMALI": "so",
+    "SOTHO": "st", "SPANISH": "es", "SWAHILI": "sw", "SWEDISH": "sv",
+    "TAGALOG": "tl", "TAMIL": "ta", "TELUGU": "te", "THAI": "th",
+    "TSONGA": "ts", "TSWANA": "tn", "TURKISH": "tr", "UKRAINIAN": "uk",
+    "URDU": "ur", "VIETNAMESE": "vi", "WELSH": "cy", "XHOSA": "xh",
+    "YORUBA": "yo", "ZULU": "zu"
+}
+
+def translate_to_english(text: str) -> tuple[str, bool, str]:
     try:
-        lang = detect(text)
-        if lang == "en":
-            return text
-        return GoogleTranslator(source=lang, target="en").translate(text)
-    except (LangDetectException, Exception):
-        return text
+        lang = detector.detect_language_of(text)
+        if lang is None:
+            print(f"{text} got language as None ")
+            return text, True, "Unknown"
+
+        lang_name = lang.name
+        if lang_name=='ENGLISH':
+            print(f"{text} got language as {lang.name}")
+            return text, True, lang.name
+
+        google_code = LINGUA_TO_GOOGLE.get(lang_name)
+
+        if google_code:
+            print(f"{text} got google code as {google_code}")
+            translated = GoogleTranslator(source=google_code, target="en").translate(text)
+            return translated, True, lang_name
+        else:
+            translated = GoogleTranslator(source="auto", target="en").translate(text)
+            return translated, False, lang_name
+    except Exception as e:
+        logger.error(f"Translation error: {e}")
+        return text, True, "Error"
 
 # ── Index builder / loader ────────────────────────────────────────────────────
 
@@ -325,8 +365,15 @@ def respond(user_msg: str, chat_history: list):
         return chat_history, [], [], ""
 
     # Translate
-    english = translate_to_english(user_msg)
-    translated_note = f"*(Translated: {english})*\n\n" if english != user_msg else ""
+    english, is_supported, lang_name = translate_to_english(user_msg)
+    
+    translated_note = ""
+    if english != user_msg:
+        translated_note = f"*(Translated from {lang_name.title()}: {english})*\n\n"
+        
+    support_notice = ""
+    if not is_supported:
+        support_notice = f"\n\n*(Note: {lang_name.title()} is not fully supported for exact translation. We used auto-detection, quality may vary.)*"
 
     # RAG retrieval — get top docs to build the recipe-photo gallery
     retriever = vs_text.as_retriever(search_kwargs={"k": TOP_K_TEXT})
@@ -362,7 +409,7 @@ def respond(user_msg: str, chat_history: list):
     # Remove citation tags only from what the user sees.
     display_answer = remove_recipe_tags(answer)
 
-    full_answer = translated_note + display_answer
+    full_answer = translated_note + display_answer + support_notice
     chat_history = chat_history + [
         {"role": "user",      "content": user_msg},
         {"role": "assistant", "content": full_answer},

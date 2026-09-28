@@ -18,3 +18,4 @@ kagglehub
 torch
 torchvision
 torchaudio
+lingua-language-detector

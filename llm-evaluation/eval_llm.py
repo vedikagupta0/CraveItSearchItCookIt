@@ -286,7 +286,9 @@ def _call_judge_with_retry(judge, messages) -> str:
 
             raise
 
-    raise last_err
+    if last_err is not None:
+        raise last_err
+    raise RuntimeError("Unexpected error during judge invocation")
 
 
 def judge_answer(judge, question: str, context_doc_texts: list[str], answer: str) -> dict:
@@ -330,7 +332,7 @@ def run_case_once(judge, case: dict) -> dict:
     expected_keywords = case.get("expected_keywords", [])
 
     t0 = time.perf_counter()
-    english_q = translate_to_english(question)
+    english_q, _, _ = translate_to_english(question)
 
     retriever = vs_text.as_retriever(search_kwargs={"k": TOP_K_TEXT})
     retrieved_docs = retriever.invoke(english_q)
@@ -478,6 +480,8 @@ def main():
 
     results = []
     for i, case in enumerate(cases, 1):
+        if i <22:
+            continue
         print(f"[{i}/{len(cases)}] Running {args.repeats}x: {case['query']!r}")
         data = run_case(judge, case, args.repeats)
 
