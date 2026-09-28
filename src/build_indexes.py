@@ -131,7 +131,7 @@ def build_clip_index(image_folder: str, out_dir: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data",   default=r"C:\Users\gvedi\.cache\kagglehub\datasets\seungyeonhan1\recipe-dataset-with-images-tags-and-ratings\versions\4\recipes_images.json")
+    parser.add_argument("--data",   default=r"~\.cache\kagglehub\datasets\seungyeonhan1\recipe-dataset-with-images-tags-and-ratings\versions\4\recipes_images.json")
     parser.add_argument("--images", default="data/images")
     parser.add_argument("--out",    default="indexes")
     parser.add_argument("--skip-clip", action="store_true",
